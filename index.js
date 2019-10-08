@@ -1,4 +1,5 @@
-const { Game } = require('./src/Game');
-Game.init()
-Game.display.getContainer();
-Game.switchScreen(Game.screens.startScreen)
+const { Screens } = require('./src/Screen');
+
+const t = new Screens();
+
+t.run();

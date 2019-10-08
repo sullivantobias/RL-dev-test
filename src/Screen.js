@@ -1,66 +1,74 @@
-// Define our initial start screen
-module.exports.startScreen = {
-    enter: () =>  { console.log("Entered start screen."); },
-    exit: () =>  { console.log("Exited start screen."); },
-    render: display => {
-        // Render our prompt to the screen
-        display.drawText(1,1, "Javascript Roguelike");
-        display.drawText(1,2, "Press [Enter] to start!");
-    }
-}
+const { Game } = require( './Game' );
+const ROT = require( 'rot-js' );
 
-// Define our playing screen
-const playScreen = {
-    enter: function() {    console.log("Entered play screen."); },
-    exit: function() { console.log("Exited play screen."); },
-    render: function(display) {
-        display.drawText(3,5, "%c{red}%b{white}This game is so much fun!");
-        display.drawText(4,6, "Press [Enter] to win, or [Esc] to lose!");
-    },
-    handleInput: function(inputType, inputData) {
-        if (inputType === 'keydown') {
-            // If enter is pressed, go to the win screen
-            // If escape is pressed, go to lose screen
-            if (inputData.keyCode === ROT.VK_RETURN) {
-                Game.switchScreen(Game.Screen.winScreen);
-            } else if (inputData.keyCode === ROT.VK_ESCAPE) {
-                Game.switchScreen(Game.Screen.loseScreen);
-            }
-        }    
-    }
-}
+class Screens extends Game {
+  run() {
+    this.init();
+    this.switchScreen( this.startScreen() )
+  }
 
-// Define our winning screen
-const winScreen = {
-    enter: function() {    console.log("Entered win screen."); },
-    exit: function() { console.log("Exited win screen."); },
-    render: function(display) {
+  startScreen() {
+    const Screen = this;
+    return {
+      enter() { console.log( "Entered start screen." ); },
+      exit() { console.log( "Exited start screen." ); },
+      render( display ) {
         // Render our prompt to the screen
-        for (var i = 0; i < 22; i++) {
-            // Generate random background colors
-            var r = Math.round(Math.random() * 255);
-            var g = Math.round(Math.random() * 255);
-            var b = Math.round(Math.random() * 255);
-            var background = ROT.Color.toRGB([r, g, b]);
-            display.drawText(2, i + 1, "%b{" + background + "}You win!");
+        display.drawText( 1, 1, "Javascript Roguelike" );
+        display.drawText( 1, 2, "Press [Enter] to start!" );
+      },
+      handleInput( event, inputType ) {
+        if (ROT.KEYS.VK_RETURN === inputType.charCodeAt( 0 )) {
+          Screen.switchScreen( Screen.playScreen() )
         }
-    },
-    handleInput: function(inputType, inputData) {
-        // Nothing to do here      
+      }
     }
+  }
+
+  playScreen() {
+    const Screen = this;
+    return {
+      enter() { console.log( "Entered play screen." ); },
+      exit() { console.log( "Exited play screen." ); },
+      render( display ) {
+        display.drawText( 3, 5, "%c{red}%b{white}This game is so much fun!" );
+        display.drawText( 4, 6, "Press [Enter] to win, or [Space] to lose!" );
+      },
+      handleInput( event, inputType ) {
+        if (inputType.charCodeAt( 0 ) === ROT.KEYS.VK_RETURN) {
+          Screen.switchScreen( Screen.winScreen() );
+        } else if (inputType.charCodeAt( 0 ) === ROT.KEYS.VK_SPACE) {
+          Screen.switchScreen( Screen.loseScreen() );
+        }
+      }
+    }
+  }
+
+  winScreen() {
+    return {
+      enter() { console.log( "Entered win screen." ); },
+      exit() { console.log( "Exited win screen." ); },
+      render( display ) {
+        display.drawText( 2, 2, "Win" );
+      },
+      handleInput() {
+
+      }
+    }
+  }
+
+  loseScreen() {
+    return {
+      enter() { console.log( "Entered lose screen." ); },
+      exit() { console.log( "Exited lose screen." ); },
+      render( display ) {
+        display.drawText( 2, 2, "Lose" );
+      },
+      handleInput() {
+
+      }
+    }
+  }
 }
 
-// Define our winning screen
-const loseScreen = {
-    enter: function() {    console.log("Entered lose screen."); },
-    exit: function() { console.log("Exited lose screen."); },
-    render: function(display) {
-        // Render our prompt to the screen
-        for (var i = 0; i < 22; i++) {
-            display.drawText(2, i + 1, "%b{red}You lose! :(");
-        }
-    },
-    handleInput: function(inputType, inputData) {
-        // Nothing to do here      
-    }
-}
+module.exports.Screens = Screens;
