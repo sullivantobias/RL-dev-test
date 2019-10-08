@@ -1,0 +1,28 @@
+{
+  "name": "rl-dev-test",
+  "version": "1.0.0",
+  "description": "roguelike test purpose",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sullivantobias/RL-dev-test.git"
+  },
+  "keywords": [
+    "roguelike",
+    "games",
+    "js",
+    "rot"
+  ],
+  "author": "Sullivan Tobias",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sullivantobias/RL-dev-test/issues"
+  },
+  "homepage": "https://github.com/sullivantobias/RL-dev-test#readme",
+  "dependencies": {
+    "rot-js": "^2.1.1"
+  }
+}
