@@ -1,4 +1,6 @@
 const { Game } = require( './Game' );
+const { Map } = require( './Map' );
+const { nullTile, floorTile, wallTile } = require( './Tile' );
 const ROT = require( 'rot-js' );
 
 class Screens extends Game {
@@ -28,11 +30,46 @@ class Screens extends Game {
   playScreen() {
     const Screen = this;
     return {
-      enter() { console.log( "Entered play screen." ); },
+      _map : null,
+      enter() { 
+        let map = [];
+        for (let x = 0; x < 80; x++) {
+            // create the nested array for the y values
+            map.push([]);
+            // add all the tiles
+            for (let y = 0; y < 20; y++) {
+                map[x].push(nullTile);
+            }
+        } 
+        const generator = new ROT.Map.Cellular(80, 20);
+        generator.randomize(0.5);
+
+        const totalIterations = 3;
+        // iteratively smoothen the map
+        for (let i = 0; i < totalIterations - 1; i++) {
+            generator.create();
+        }
+        // cmoothen it one last time and then update our map
+        generator.create((x, y, v) => {
+            if (v === 1) map[x][y] = floorTile; 
+            else map[x][y] = wallTile;
+        });
+        // create our map from the tiles
+        this._map = new Map(map);
+      },
       exit() { console.log( "Exited play screen." ); },
       render( display ) {
-        display.drawText( 3, 5, "%c{red}%b{white}This game is so much fun!" );
-        display.drawText( 4, 6, "Press [Enter] to win, or [Space] to lose!" );
+        // iterate through all map cells
+        for (let x = 0; x < this._map.width; x++) {
+          for (let y = 0; y < this._map.height; y++) {
+              // fetch the glyph for the tile and render it to the screen
+              let glyph = this._map.getTile(x, y).glyph;
+              display.draw(x, y,
+                  glyph.char,
+                  glyph.foreground, 
+                  glyph.background);
+          }
+  }
       },
       handleInput( event, inputType ) {
         if (inputType.charCodeAt( 0 ) === ROT.KEYS.VK_RETURN) {
