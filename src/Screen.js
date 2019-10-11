@@ -46,7 +46,7 @@ class Screens extends Game {
 
         const totalIterations = 3;
         // iteratively smoothen the map
-        for (let i = 0; i < totalIterations - 1; i++) {
+        for (let i = 0; i < totalIterations; i++) {
             generator.create();
         }
         // cmoothen it one last time and then update our map
@@ -63,7 +63,7 @@ class Screens extends Game {
         for (let x = 0; x < this._map.width; x++) {
           for (let y = 0; y < this._map.height; y++) {
               // fetch the glyph for the tile and render it to the screen
-              let glyph = this._map.getTile(x, y).glyph;
+              const glyph = this._map.getTile(x, y).glyph;
               display.draw(x, y,
                   glyph.char,
                   glyph.foreground, 
@@ -76,6 +76,8 @@ class Screens extends Game {
           Screen.switchScreen( Screen.winScreen() );
         } else if (inputType.charCodeAt( 0 ) === ROT.KEYS.VK_SPACE) {
           Screen.switchScreen( Screen.loseScreen() );
+        } else if (inputType.charCodeAt( 0 ) === ROT.KEYS.VK_TAB) {
+          Screen.switchScreen( Screen.playScreen() );
         }
       }
     }

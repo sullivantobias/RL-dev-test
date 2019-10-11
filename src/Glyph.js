@@ -1,17 +1,17 @@
 class Glyph {
     constructor(chr, foreground, background) {
-        this._char = chr || ' ';
+        this._char = chr || '0';
         this._foreground = foreground || 'white';
-        this._background = background || 'red';
+        this._background = background || 'black';
     }
 
-    get char () {
+    get char() {
         return this._char;
     }
-    get foreground () {
+    get foreground() {
         return this._foreground;
     }
-    get background () {
+    get background() {
         return this._background;
     }
 }

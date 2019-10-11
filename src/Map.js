@@ -12,14 +12,14 @@ class Map {
         this._height = tiles[0].length;
     }
 
-    get width () {
+    get width() {
         return this._width;
     }
-    get height () {
+    get height() {
         return this._height;
     }
     // gets the tile for a given coordinate set
-    getTile (x, y) {
+    getTile(x, y) {
         /**
          * Make sure we are inside the bounds. If we aren't, return
          * null tile.
