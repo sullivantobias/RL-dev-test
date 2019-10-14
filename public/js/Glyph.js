@@ -1,4 +1,4 @@
-class Glyph {
+export class Glyph {
     constructor(chr, foreground, background) {
         this._char = chr || '0';
         this._foreground = foreground || 'white';
@@ -15,5 +15,3 @@ class Glyph {
         return this._background;
     }
 }
-
-module.exports.Glyph = Glyph;

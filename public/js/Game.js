@@ -1,30 +1,29 @@
-const ROT = require( 'rot-js' );
-const readline = require( 'readline' );
-
-readline.emitKeypressEvents( process.stdin );
-process.stdin.setRawMode( true );
-
-class Game {
+export class Game {
   constructor() {
     this._display = null;
     this._currentScreen = null;
+    this._screenWidth = 80;
+    this._screenHeight = 24;
   }
 
   init() {
-    this._display = new ROT.Display( { width: 80, height: 20, layout: 'term' } );
+    this._display = new ROT.Display( { width: this._screenWidth, height: this._screenHeight } );
 
     const bindEventToScreen = event => {
-      process.stdin.on( event, t => {
+      window.addEventListener( event, e => {
         if (this._currentScreen !== null) {
           // Send the event type and data to the screen
-          this._currentScreen.handleInput( event, t );
+          this._currentScreen.handleInput( event, e );
+          this._display.clear();
+          // Render the screen
+          this._currentScreen.render( this._display );
         }
       } )
     };
 
     bindEventToScreen( 'keydown' );
-    bindEventToScreen( 'keyup' );
-    bindEventToScreen( 'keypress' );
+    //bindEventToScreen( 'keyup' );
+    //bindEventToScreen( 'keypress' );
   }
 
   switchScreen( screen ) {
@@ -45,6 +44,12 @@ class Game {
   get display() {
     return this._display;
   }
-}
 
-module.exports.Game = Game;
+  get screenWidth() {
+    return this._screenWidth;
+  };
+
+  get screenHeight() {
+    return this._screenHeight;
+  };
+}

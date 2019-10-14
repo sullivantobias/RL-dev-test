@@ -1,6 +1,6 @@
-const { nullTile } = require( './Tile' );
+import { nullTile } from './Tile.js';
 
-class Map {
+export class Mapping {
     constructor(tiles) {
         this._tiles = tiles;
         /**
@@ -31,5 +31,3 @@ class Map {
         }
     }
 }
-
-module.exports.Map = Map
