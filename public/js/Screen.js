@@ -1,12 +1,10 @@
 import { Game } from './Game.js';
 import { Mapping } from './Map.js';
 import { nullTile, floorTile, wallTile } from './Tile.js';
+import { PlayerTemplate } from './Entities.js';
+import { Entity } from './Entity.js';
 
 export default class Screens extends Game {
-  run() {
-    this.init();
-  }
-
   startScreen() {
     const Screen = this;
     return {
@@ -17,7 +15,7 @@ export default class Screens extends Game {
         display.drawText( 1, 1, "Javascript Roguelike" );
         display.drawText( 1, 2, "Press [Enter] to start!" );
       },
-      handleInput( event, inputType ) {
+      handleInput( inputType ) {
         if (inputType.key === 'Enter') {
           Screen.switchScreen( Screen.playScreen() )
         }
@@ -29,8 +27,7 @@ export default class Screens extends Game {
     const Screen = this;
     return {
       _map: null,
-      _centerX: 0,
-      _centerY: 0,
+      _player: null,
       enter() {
         let map = [];
         const mapWidth = 250;
@@ -51,31 +48,34 @@ export default class Screens extends Game {
         for (let i = 0; i < totalIterations; i++) {
           generator.create();
         }
-        // cmoothen it one last time and then update our map
+        // smoothen it one last time and then update our map
         generator.create( ( x, y, v ) => {
           if (v === 1) map[x][y] = floorTile;
           else map[x][y] = wallTile;
         } );
         // create our map from the tiles
         this._map = new Mapping( map );
+        this._player = new Entity(PlayerTemplate);
+        const position = this._map.getRandomFloorPosition();
+        this._player.x = position.x;
+        this._player.y = position.y;
       },
       move( dX, dY ) {
-        this._centerX = Math.max( 0,
-            Math.min( this._map.width - 1, this._centerX + dX ) );
-
-        this._centerY = Math.max( 0,
-            Math.min( this._map.height - 1, this._centerY + dY ) );
+        const newX = this._player.x + dX;
+        const newY = this._player.y + dY;
+        // try to move to the new cell
+        this._player.tryMove(newX, newY, this._map);
       },
       exit() { console.log( "Exited play screen." ); },
       render( display ) {
         const screenWidth = Screen.screenWidth;
         const screenHeight = Screen.screenHeight;
         // make sure the x-axis doesn't go to the left of the left bound
-        let topLeftX = Math.max( 0, this._centerX - ( screenWidth / 2 ) );
+        let topLeftX = Math.max( 0, this._player.x - ( screenWidth / 2 ) );
           // make sure we still have enough space to fit an entire game screen
         topLeftX = Math.min( topLeftX, this._map.width - screenWidth );
         // make sure the y-axis doesn't above the top bound
-        let topLeftY = Math.max( 0, this._centerY - ( screenHeight / 2 ) );
+        let topLeftY = Math.max( 0, this._player.y - ( screenHeight / 2 ) );
         // make sure we still have enough space to fit an entire game screen
         topLeftY = Math.min( topLeftY, this._map.height - screenHeight );
           
@@ -83,24 +83,28 @@ export default class Screens extends Game {
         for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
           for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
             // fetch the glyph for the tile and render it to the screen
-            const glyph = this._map.getTile( x, y ).glyph;
-            display.draw( x - topLeftX, y - topLeftY,
+            const glyph = this._map.getTile( x, y );
+
+            display.draw( 
+                x - topLeftX, 
+                y - topLeftY,
                 glyph.char,
                 glyph.foreground,
                 glyph.background
             );
           }
-          // Render the cursor
+          // render the player
         }
         display.draw(
-            this._centerX - topLeftX,
-            this._centerY - topLeftY,
-            '@',
-            'white',
-            'black' );
+            this._player.x - topLeftX,
+            this._player.y - topLeftY,
+            this._player.char,
+            this._player.foreground,
+            this._player.background
+        )
 
       },
-      handleInput( event, inputType ) {
+      handleInput( inputType ) {
         switch(inputType.code) {
           case 'Enter': 
           Screen.switchScreen( Screen.winScreen() );

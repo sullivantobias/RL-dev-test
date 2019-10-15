@@ -13,7 +13,7 @@ export class Game {
       window.addEventListener( event, e => {
         if (this._currentScreen !== null) {
           // Send the event type and data to the screen
-          this._currentScreen.handleInput( event, e );
+          this._currentScreen.handleInput( e );
           this._display.clear();
           // Render the screen
           this._currentScreen.render( this._display );

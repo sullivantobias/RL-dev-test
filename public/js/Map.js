@@ -1,4 +1,4 @@
-import { nullTile } from './Tile.js';
+import { nullTile, floorTile } from './Tile.js';
 
 export class Mapping {
     constructor(tiles) {
@@ -12,6 +12,24 @@ export class Mapping {
         this._height = tiles[0].length;
     }
 
+    dig(x, y) {
+        // if the tile is diggable, update it to a floor
+        if (this.getTile(x, y).isDiggable()) {
+            this._tiles[x][y] = floorTile;
+        }
+    }
+
+    getRandomFloorPosition() {
+        // randomly generate a tile which is a floor
+        let x, y;
+        do {
+            x = Math.floor(Math.random() * this._width);
+            y = Math.floor(Math.random() * this._width);
+        } while(this.getTile(x, y) != floorTile);
+
+        return { x: x, y: y };
+    }
+
     get width() {
         return this._width;
     }
@@ -21,7 +39,7 @@ export class Mapping {
     // gets the tile for a given coordinate set
     getTile(x, y) {
         /**
-         * Make sure we are inside the bounds. If we aren't, return
+         * make sure we are inside the bounds. If we aren't, return
          * null tile.
          */
         if (x < 0 || x >= this._width || y < 0 || y >= this._height) {

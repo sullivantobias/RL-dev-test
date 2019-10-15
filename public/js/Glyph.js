@@ -1,8 +1,9 @@
 export class Glyph {
-    constructor(chr, foreground, background) {
-        this._char = chr || '0';
-        this._foreground = foreground || 'white';
-        this._background = background || 'black';
+    constructor(props) {
+        props = props || {}
+        this._char = props['character'] || ' ';
+        this._foreground = props['foreground'] || 'white';
+        this._background = props['background'] || 'black';
     }
 
     get char() {
