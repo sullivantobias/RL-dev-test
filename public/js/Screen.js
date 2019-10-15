@@ -70,17 +70,16 @@ export default class Screens extends Game {
       render( display ) {
         const screenWidth = Screen.screenWidth;
         const screenHeight = Screen.screenHeight;
-        // Make sure the x-axis doesn't go to the left of the left bound
+        // make sure the x-axis doesn't go to the left of the left bound
         let topLeftX = Math.max( 0, this._centerX - ( screenWidth / 2 ) );
-        // Make sure we still have enough space to fit an entire game screen
+          // make sure we still have enough space to fit an entire game screen
         topLeftX = Math.min( topLeftX, this._map.width - screenWidth );
-        // Make sure the y-axis doesn't above the top bound
+        // make sure the y-axis doesn't above the top bound
         let topLeftY = Math.max( 0, this._centerY - ( screenHeight / 2 ) );
-        // Make sure we still have enough space to fit an entire game screen
+        // make sure we still have enough space to fit an entire game screen
         topLeftY = Math.min( topLeftY, this._map.height - screenHeight );
-        // Iterate through all visible map cells
-
-        // iterate through all map cells
+          
+        // iterate through all visible map cells
         for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
           for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
             // fetch the glyph for the tile and render it to the screen
@@ -102,23 +101,36 @@ export default class Screens extends Game {
 
       },
       handleInput( event, inputType ) {
-        if (inputType.code === 'Enter') {
+        switch(inputType.code) {
+          case 'Enter': 
           Screen.switchScreen( Screen.winScreen() );
-        } else if (inputType.code === 'Space') {
+          break;
+          case 'Space':
           Screen.switchScreen( Screen.loseScreen() );
-        } else if (inputType.code === 'Tab') {
+          break;
+          case 'Tab':
           Screen.switchScreen( Screen.playScreen() );
+          break;
+          default: 
+          break;
         }
 
         // movements
-        if (inputType.key === 'q') {
+        switch(inputType.key) {
+          case 'q': 
           this.move( -1, 0 );
-        } else if (inputType.key === 'd') {
+          break;
+          case 'd':
           this.move( 1, 0 );
-        } else if (inputType.key === 'z') {
+          break;
+          case 'z':
           this.move( 0, -1 );
-        } else if (inputType.key === 's') {
+          break;
+          case 's':
           this.move( 0, 1 );
+          break;
+          default: 
+          break;
         }
       }
     }
