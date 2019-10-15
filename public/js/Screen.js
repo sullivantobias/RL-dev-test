@@ -1,7 +1,7 @@
 import { Game } from './Game.js';
 import { Mapping } from './Map.js';
 import { nullTile, floorTile, wallTile } from './Tile.js';
-import { PlayerTemplate } from './Entities.js';
+import { PlayerTemplate, ObjectTemplate } from './Entities.js';
 import { Entity } from './Entity.js';
 
 export default class Screens extends Game {
@@ -28,6 +28,7 @@ export default class Screens extends Game {
     return {
       _map: null,
       _player: null,
+      _testObject: null,
       enter() {
         let map = [];
         const mapWidth = 250;
@@ -56,9 +57,13 @@ export default class Screens extends Game {
         // create our map from the tiles
         this._map = new Mapping( map );
         this._player = new Entity(PlayerTemplate);
+        this._testObject = new Entity(ObjectTemplate)
         const position = this._map.getRandomFloorPosition();
         this._player.x = position.x;
         this._player.y = position.y;
+
+        this._testObject.x = position.x + 1
+        this._testObject.y = position.y;
       },
       move( dX, dY ) {
         const newX = this._player.x + dX;
@@ -102,6 +107,13 @@ export default class Screens extends Game {
             this._player.foreground,
             this._player.background
         )
+        display.draw(
+          this._testObject.x - topLeftX,
+          this._testObject.y - topLeftY,
+          this._testObject.char,
+          this._testObject.foreground,
+          this._testObject.background
+      )
 
       },
       handleInput( inputType ) {

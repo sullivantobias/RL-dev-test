@@ -33,3 +33,10 @@ export const PlayerTemplate = {
     background: 'black',
     mixins: [Mixins.Moveable]
 }
+
+// object template
+export const ObjectTemplate = {
+    character: ')',
+    foreground: 'blue',
+    background: 'black',
+}
