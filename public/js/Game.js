@@ -7,26 +7,31 @@ export class Game {
   }
 
   init() {
-    this._display = new ROT.Display( { width: this._screenWidth, height: this._screenHeight } );
+    this._display = new ROT.Display({
+      width: this._screenWidth,
+      height: this._screenHeight
+    });
 
     const bindEventToScreen = event => {
-      window.addEventListener( event, e => {
+      window.addEventListener(event, e => {
         if (this._currentScreen !== null) {
           // Send the event type and data to the screen
-          this._currentScreen.handleInput( e );
-          this._display.clear();
-          // Render the screen
-          this._currentScreen.render( this._display );
+          this._currentScreen.handleInput(e);
         }
-      } )
+      });
     };
 
-    bindEventToScreen( 'keydown' );
-    //bindEventToScreen( 'keyup' );
-    //bindEventToScreen( 'keypress' );
+    bindEventToScreen("keydown");
   }
 
-  switchScreen( screen ) {
+  refresh() {
+    // clear the screen
+    this.display.clear();
+    // render the screen
+    this._currentScreen.render(this._display);
+  }
+
+  switchScreen(screen) {
     if (this._currentScreen) this._currentScreen.exit();
     // Clear the display
     this.display.clear();
@@ -37,7 +42,7 @@ export class Game {
 
     if (this._currentScreen) {
       this._currentScreen.enter();
-      this._currentScreen.render( this._display );
+      this.refresh();
     }
   }
 
@@ -47,9 +52,9 @@ export class Game {
 
   get screenWidth() {
     return this._screenWidth;
-  };
+  }
 
   get screenHeight() {
     return this._screenHeight;
-  };
+  }
 }
