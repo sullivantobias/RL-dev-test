@@ -23,7 +23,7 @@ export class Mapping {
     // add the player
     this.addEntityAtRandomPosition(player);
     // add random fungi
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 50; i++) {
       this.addEntityAtRandomPosition(new Entity(FungusTemplate));
     }
   }
@@ -41,7 +41,7 @@ export class Mapping {
     do {
       x = Math.floor(Math.random() * this._width);
       y = Math.floor(Math.random() * this._width);
-    } while (this.getTile(x, y) != FLOORTILE || this.getEntityAt(x, y));
+    } while (!this.isEmptyFloor(x, y));
 
     return { x: x, y: y };
   }
@@ -93,7 +93,7 @@ export class Mapping {
   getEntityAt(x, y) {
     // iterate through all entities searching for one with
     // matching position
-    for (var i = 0; i < this._entities.length; i++) {
+    for (let i = 0; i < this._entities.length; i++) {
       if (this._entities[i].x == x && this._entities[i].y == y) {
         return this._entities[i];
       }
@@ -112,4 +112,44 @@ export class Mapping {
       return this._tiles[x][y] || NULLTILE;
     }
   }
+
+  removeEntity(entity) {
+    // find the entity in the list of entities if it is present
+    for (let i = 0; i < this._entities.length; i++) {
+      if (this._entities[i] == entity) {
+        this._entities.splice(i, 1);
+        break;
+      }
+    }
+    // if the entity is an actor, remove them from the scheduler
+    if (entity.hasMixin("Actor")) {
+      this._scheduler.remove(entity);
+    }
+  }
+
+  isEmptyFloor(x, y) {
+    // check if the tile is floor and also has no entity
+    return this.getTile(x, y) == FLOORTILE && !this.getEntityAt(x, y);
+  }
+
+  getEntitiesWithinRadius = function(centerX, centerY, radius) {
+    let results = [];
+    // Determine our bounds
+    const leftX = centerX - radius;
+    const rightX = centerX + radius;
+    const topY = centerY - radius;
+    const bottomY = centerY + radius;
+    // Iterate through our entities, adding any which are within the bounds
+    for (let i = 0; i < this._entities.length; i++) {
+      if (
+        this._entities[i].x >= leftX &&
+        this._entities[i].x <= rightX &&
+        this._entities[i].y >= topY &&
+        this._entities[i].y <= bottomY
+      ) {
+        results.push(this._entities[i]);
+      }
+    }
+    return results;
+  };
 }

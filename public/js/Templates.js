@@ -1,22 +1,22 @@
 import { Mixins } from "./Entities.js";
 
-// player template
 export const PlayerTemplate = {
   character: "@",
   foreground: "white",
-  background: "black",
-  mixins: [Mixins.Moveable, Mixins.PlayerActor]
+  maxHp: 40,
+  attackValue: 10,
+  mixins: [
+    Mixins.Moveable,
+    Mixins.PlayerActor,
+    Mixins.Attacker,
+    Mixins.Destructible,
+    Mixins.MessageRecipient
+  ]
 };
-
-// object template
-export const ObjectTemplate = {
-  character: ")",
-  foreground: "blue",
-  background: "black"
-};
-
+// Fungus template
 export const FungusTemplate = {
   character: "F",
   foreground: "green",
-  mixins: [Mixins.FungusActor]
+  maxHp: 40,
+  mixins: [Mixins.FungusActor, Mixins.Destructible]
 };

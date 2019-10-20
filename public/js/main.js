@@ -1,6 +1,6 @@
 import { RunGame } from "./Screen.js";
 
-window.onload = function() {
+window.onload = () => {
   // initialize the game
   RunGame.init();
   // add the container to our HTML page

@@ -3,8 +3,13 @@ import { Mapping } from "./Map.js";
 import { NULLTILE, FLOORTILE, WALLTILE } from "./TileConstants.js";
 import { PlayerTemplate } from "./Templates.js";
 import { Entity } from "./Entity.js";
+import { Mixins } from "./Entities.js";
 
 export default class Screens extends Game {
+  constructor(mixins) {
+    super(mixins);
+  }
+
   startScreen() {
     const Screen = this;
     return {
@@ -117,6 +122,22 @@ export default class Screens extends Game {
             );
           }
         }
+        const messages = this._player.getMessages;
+        const messageY = 0;
+        for (let i = 0; i < messages.length; i++) {
+          // Draw each message, adding the number of lines
+          messageY += display.drawText(
+            0,
+            messageY,
+            "%c{white}%b{black}" + messages[i]
+          );
+          let stats = "%c{white}%b{black}";
+          stats += vsprintf("HP: %d/%d ", [
+            this._player.hp,
+            this._player.maxHp
+          ]);
+          display.drawText(0, screenHeight, stats);
+        }
       },
       handleInput(inputType) {
         switch (inputType.code) {
@@ -188,4 +209,4 @@ export default class Screens extends Game {
   }
 }
 
-export const RunGame = new Screens();
+export const RunGame = new Screens(Mixins);

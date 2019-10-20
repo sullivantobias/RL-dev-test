@@ -18,7 +18,6 @@ export class Entity extends Glyph {
     this._attachedMixinGroups = {};
 
     const mixins = props["mixins"] || [];
-
     for (let i = 0; i < mixins.length; i++) {
       // copy over all properties from each mixin as long
       // as it's not the name or the init property. We
@@ -36,7 +35,7 @@ export class Entity extends Glyph {
         this._attachedMixinGroups[mixins[i].groupName] = true;
       }
       // finally call the init function if there is one
-      if (mixins[i].init) mixins[i].init();
+      if (mixins[i].init) mixins[i].init(this);
     }
   }
 
@@ -45,7 +44,7 @@ export class Entity extends Glyph {
     if (typeof obj === "object") {
       return this._attachedMixins[obj.name];
     } else {
-      return this._attachedMixins[name] || this._attachedMixinGroups[obj];
+      return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
     }
   }
 
